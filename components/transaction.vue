@@ -5,15 +5,13 @@ const props = defineProps({
 
 const emit = defineEmits(['edited', 'deleted']);
 
-const amountRef = toRef(props.transaction, 'amount');
-
-const supabase = useSupabaseClient();
-const { currency } = useCurrency(amountRef);
-const { toastSuccess, toastError } = useCustomToast();
-
 const isEdit = ref(true);
-const isOpen = ref(false);
-const isLoading = ref(false);
+
+const amount = computed(() => {
+  return props.transaction.amount;
+});
+
+const { currency } = useCurrency(amount);
 
 const isIncome = computed(() => props.transaction.type === 'Income');
 const icon = computed(() =>
@@ -22,20 +20,10 @@ const icon = computed(() =>
 const iconColor = computed(() =>
   isIncome.value ? 'text-green-600' : 'text-red-600'
 );
-// const getTransaction = async () => {
-//   isOpen.value = true
-//   try {
-//     const { data } = await supabase
-//       .from('transactions')
-//       .select()
-//       .eq('id', props.transaction.id)
-//       .single();
-//     console.log('getTransaction', data);
-//     Object.assign(state, data);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+
+const isLoading = ref(false);
+const supabase = useSupabaseClient();
+const { toastSuccess, toastError } = useCustomToast();
 // 刪除
 const deleteTransaction = async () => {
   isLoading.value = true;
@@ -51,6 +39,7 @@ const deleteTransaction = async () => {
     isLoading.value = false;
   }
 };
+const isOpen = ref(false);
 // 下拉式按鈕群組
 const items = [
   [

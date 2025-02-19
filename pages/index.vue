@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import { format } from 'date-fns';
 // definePageMeta({
 //   middleware: 'auth',
 // });
-import { format } from 'date-fns';
+const isEdit = ref(false);
+const isOpen = ref(false);
 
 const user = useSupabaseUser();
 // console.log(user.value);
@@ -14,8 +16,6 @@ const selectedCycle = computed(() => {
   if (selectedView.value === 'monthly') return `${format(new Date(), 'yyyy-MM')} 月`;
   return `${format(new Date(), 'yyyy-MM-dd')} `;
 });
-const isEdit = ref(false);
-const isOpen = ref(false);
 
 // 依年/月/日選單取得開始和結束時間
 const { current, previous } = useSelectPeriod(selectedView);
@@ -106,7 +106,7 @@ const { data, error } = await supabase
     </div>
     <!-- 新增交易 Modal -->
     <div>
-      <TransactionModal v-model="isOpen" :isEdit="isEdit" @saved="refresh()" />
+      <TransactionModal v-model="isOpen" :isEdit="isEdit" @saved="refresh" />
       <UButton
         icon="i-heroicons-plus-circle"
         color="white"
@@ -131,8 +131,8 @@ const { data, error } = await supabase
         v-for="transaction of transactionOnDay"
         :key="transaction.id"
         :transaction="transaction"
-        @edited="refresh()"
-        @deleted="refresh()"
+        @edited="refresh"
+        @deleted="refresh"
       />
     </div>
   </section>

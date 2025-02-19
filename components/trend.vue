@@ -8,10 +8,11 @@ const props = defineProps<{
   color: string;
   loading: Boolean;
 }>();
-// const { amount } = toRefs(props);
-const amount = computed(() => {
-  return props.amount ?? 0;
-});
+
+const { amount } = toRefs(props);
+// const amount = computed(() => {
+//   return props.amount ?? 0;
+// });
 // const lastAmount = computed(() => {
 //   return props.lastAmount ?? 0;
 // });
