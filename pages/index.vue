@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 // definePageMeta({
 //   middleware: 'auth',
 // });
-const isEdit = ref(false);
+
 const isOpen = ref(false);
 
 const user = useSupabaseUser();
@@ -106,7 +106,7 @@ const { data, error } = await supabase
     </div>
     <!-- 新增交易 Modal -->
     <div>
-      <TransactionModal v-model="isOpen" :isEdit="isEdit" @saved="refresh" />
+      <TransactionModal v-model="isOpen" :isEdit="false" @saved="refresh" />
       <UButton
         icon="i-heroicons-plus-circle"
         color="white"

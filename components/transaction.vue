@@ -5,8 +5,6 @@ const props = defineProps({
 
 const emit = defineEmits(['edited', 'deleted']);
 
-const isEdit = ref(true);
-
 const amount = computed(() => {
   return props.transaction.amount;
 });
@@ -96,7 +94,7 @@ const items = [
         <TransactionModal
           v-model="isOpen"
           :transaction="transaction"
-          :isEdit="isEdit"
+          :isEdit="true"
           @saved="emit('edited')"
         />
       </UDropdown>

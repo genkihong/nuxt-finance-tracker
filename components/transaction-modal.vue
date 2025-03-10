@@ -13,6 +13,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:modelValue', 'saved']);
 const { isEdit } = toRefs(props);
+// console.log('isEdit', isEdit.value);
 // console.log('modelValue=>', props.modelValue);
 
 // 驗證金額/描述/日期
@@ -50,47 +51,50 @@ const schema = z.intersection(
   ]),
   defaultSchema
 );
+const initState = {
+  type: 'Income',
+  amount: 0,
+  created_at: formatISO(new Date(), { representation: 'date' }),
+  description: '',
+  category: '',
+};
+const editState = {
+  type: props.transaction?.type,
+  amount: props.transaction?.amount,
+  created_at: props.transaction?.created_at.substring(0, 10),
+  description: props.transaction?.description ?? '',
+  category: props.transaction?.category,
+};
+// 新增或編輯時 state
+const initialState = () => {
+  if (isEdit.value) {
+    return editState;
+  }
+  return initState;
+};
+// 表單初始值
+const state = reactive({ ...initialState() });
 // 編輯時才會把 transaction 傳進來
 // const isEditing = computed(() => !!props.transaction);
 // 傳進來的值如有改變要用 emit 傳給父元件(Index)
 const isOpen = computed({
   get: () => props.modelValue,
   set: (value) => {
-    // console.log('value =>', value)
+    // console.log('value =>', value);
     if (!value) restForm(); // 清除表單
     emit('update:modelValue', value);
   },
 });
-const form = ref();
-const isLoading = ref(false);
-
-// 新增或編輯時 state
-const initialState = () => {
-  if (isEdit.value) {
-    return {
-      type: props.transaction?.type,
-      amount: props.transaction?.amount,
-      created_at: props.transaction?.created_at.substring(0, 10),
-      description: props.transaction?.description ?? '',
-      category: props.transaction?.category,
-    };
-  }
-  return {
-    type: 'Income',
-    amount: 0,
-    created_at: formatISO(new Date(), { representation: 'date' }),
-    description: '',
-    category: '',
-  };
-};
-// 表單初始值
-const state = reactive({ ...initialState() });
 // 恢復表單初始值
 const restForm = () => {
-  // Object.assign(state, initialState);
+  if (!isEdit.value) {
+    Object.assign(state, initState);
+  }
   // 清除錯誤訊息
   form.value.clear();
 };
+const form = ref();
+const isLoading = ref(false);
 const supabase = useSupabaseClient<Database>();
 const { toastSuccess, toastError } = useCustomToast();
 
